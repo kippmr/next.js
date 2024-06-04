@@ -1133,10 +1133,13 @@ impl AppEndpoint {
                 let loadable_manifest_output = create_react_loadable_manifest(
                     dynamic_import_entries,
                     client_relative_path,
-                    node_root.join(format!(
-                        "server/app{}/react-loadable-manifest.json",
-                        &app_entry.original_name
-                    )),
+                    node_root.join(
+                        format!(
+                            "server/app{}/react-loadable-manifest.json",
+                            &app_entry.original_name
+                        )
+                        .into(),
+                    ),
                 );
                 server_assets.extend(loadable_manifest_output.await?.iter().copied());
 
@@ -1175,10 +1178,13 @@ impl AppEndpoint {
                     asset: rsc_chunk, ..
                 } = *chunking_context
                     .entry_chunk_group(
-                        server_path.join(format!(
-                            "app{original_name}.js",
-                            original_name = app_entry.original_name
-                        )),
+                        server_path.join(
+                            format!(
+                                "app{original_name}.js",
+                                original_name = app_entry.original_name
+                            )
+                            .into(),
+                        ),
                         app_entry.rsc_entry,
                         Vc::cell(evaluatable_assets),
                         Value::new(AvailabilityInfo::Root),
@@ -1193,7 +1199,7 @@ impl AppEndpoint {
                         .await?
                         .get_path_to(&*rsc_chunk.ident().path().await?)
                         .context("RSC chunk path should be within app paths manifest directory")?
-                        .to_string(),
+                        .into(),
                 )?;
                 server_assets.push(app_paths_manifest_output);
 
