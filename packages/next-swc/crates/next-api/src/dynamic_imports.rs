@@ -6,7 +6,7 @@ use indexmap::IndexMap;
 use tracing::Level;
 use turbo_tasks::{
     graph::{GraphTraversal, NonDeterministic},
-    Value, Vc,
+    RcStr, Value, Vc,
 };
 use turbopack_binding::{
     swc::core::ecma::{
@@ -211,7 +211,7 @@ async fn build_dynamic_imports_map_for_module(
                 client_asset_context,
                 server_module.ident().path(),
             )),
-            Request::parse(Value::new(Pattern::Constant(import.into()))),
+            Request::parse(Value::new(Pattern::Constant(import.clone()))),
             Value::new(EcmaScriptModulesReferenceSubType::DynamicImport),
             IssueSeverity::Error.cell(),
             None,
@@ -231,7 +231,7 @@ async fn build_dynamic_imports_map_for_module(
 /// import wrapped with dynamic() via CollectImportSourceVisitor.
 struct DynamicImportVisitor {
     dynamic_ident: Option<Ident>,
-    pub import_sources: Vec<String>,
+    pub import_sources: Vec<RcStr>,
 }
 
 impl DynamicImportVisitor {
